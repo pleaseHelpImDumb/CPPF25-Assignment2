@@ -48,6 +48,33 @@ void draw_gradient_rectangle(BMP &bmp,int x, int y, int l, int h, color c1, colo
 }
 
 // triangle
+// find slope
+void draw_triangle(BMP &bmp, int x1, int y1, int x2, int y2, int x3, int y3, color c){
+
+    //draw line from (x1, y1) to (x2, y2)
+    float slope;
+    if(x2-x1 == 0){
+        slope = (y2-y1) * -1;
+    }
+    else{
+     slope = (y2-y1)/(x2-x1) * -1; //multiply by -1 since BMP goes down
+ 
+       }   
+       std::cout<<slope<<std::endl;
+    for(int i = x1; i <= x2;){
+        for(int j = y1; j <= y2;){
+            bmp.set_pixel(i, j, c.r, c.g, c.b);
+
+            //modify i, j
+            i = i+((slope/1)*-1);
+            j = j+(slope*-1);
+        }
+    }
+
+
+
+    slope = (y3-y1)/(x3-x1) * -1;
+}
 
 int main() {
     
@@ -70,7 +97,12 @@ int main() {
    //draw border
     draw_rectangle(bmp,1,1,500,500,10,color{255,0,0});
     
-    draw_gradient_rectangle(bmp, 20, 20, 250, 250, c, c1);
+    
+    //draw_gradient_rectangle(bmp, 20, 20, 250, 250, c, c1);
+
+
+    draw_triangle(bmp, 0, 0, 0, 100, 25, 100, c);
+
     bmp.write("gradient_rect.bmp"); // Save the image to a file
 
     return 0;
