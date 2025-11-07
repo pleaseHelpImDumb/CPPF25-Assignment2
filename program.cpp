@@ -47,33 +47,34 @@ void draw_gradient_rectangle(BMP &bmp,int x, int y, int l, int h, color c1, colo
     }
 }
 
+void draw_line(BMP &bmp, int x1, int y1, int x2, int y2, color c){
+
+    // find slope
+    int dx = x2 - x1;   
+    int dy = y2 - y1;   
+    
+    // find # of steps (the bigger difference - aka which direction steps go in)
+    int step = std::max(abs(dx), abs(dy)); //steps = 150
+
+    // find 'ratio' - how much x and y moves
+    float x_step = (float)dx / step;      
+    float y_step = (float)dy / step;      
+    
+    // draw line
+    float x = x1;
+    float y = y1;
+    for(int i = 0; i <= step; i++) {
+        bmp.set_pixel((int)x, (int)y, c.r, c.g, c.b);
+        x += x_step;    // ex: if steeper, x < 1 so x might be a value like 100.33. when cast to int, it will always round down
+        y += y_step;
+    }
+}
+
 // triangle
-// find slope
 void draw_triangle(BMP &bmp, int x1, int y1, int x2, int y2, int x3, int y3, color c){
-
-    //draw line from (x1, y1) to (x2, y2)
-    float slope;
-    if(x2-x1 == 0){
-        slope = (y2-y1) * -1;
-    }
-    else{
-     slope = (y2-y1)/(x2-x1) * -1; //multiply by -1 since BMP goes down
- 
-       }   
-       std::cout<<slope<<std::endl;
-    for(int i = x1; i <= x2;){
-        for(int j = y1; j <= y2;){
-            bmp.set_pixel(i, j, c.r, c.g, c.b);
-
-            //modify i, j
-            i = i+((slope/1)*-1);
-            j = j+(slope*-1);
-        }
-    }
-
-
-
-    slope = (y3-y1)/(x3-x1) * -1;
+    draw_line(bmp, x1, y1, x2, y2, c);
+    draw_line(bmp, x1, y1, x3, y3, c);
+    draw_line(bmp, x2, y2, x3, y3, c);
 }
 
 int main() {
@@ -99,11 +100,13 @@ int main() {
     
     
     //draw_gradient_rectangle(bmp, 20, 20, 250, 250, c, c1);
+    // bmp.write("gradient_rect.bmp"); // Save the image to a file
 
 
-    draw_triangle(bmp, 0, 0, 0, 100, 25, 100, c);
+    draw_line(bmp, 250, 250, 300, 400, color{0,0,0});
+    draw_triangle(bmp, 100, 100, 200, 100, 150, 400, color{255,0,0});
+    bmp.write("triangle.bmp"); // Save the image to a file
 
-    bmp.write("gradient_rect.bmp"); // Save the image to a file
 
     return 0;
 }
